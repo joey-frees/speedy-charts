@@ -184,4 +184,112 @@ class StackedBar(CreateChart):
                 print('Colour Palette - ', colour_palette)
 
                 return ax
+        else:
+            raise ValueError("You need to supply a dataframe to create a stacked bar chart")
+
+
+class HorizontalStackedBar(CreateChart):
+    def __init__(self, x, y, df=None):
+        super().__init__(x, y, df)
+
+    def plot(self, x_label = '', y_label = '', title = '', colour_palette = , legend = True, legend_loc = 'lower center', legend_plot_area = 'outside', theme = ):
+        plt.style.use(theme)
+        fig, ax = plt.subplots(layout='constrained')
+
+        # Create stacked bar from df
+        if self.df is not None:
+            if type(self.y) != list:
+                raise ValueError("You need to supply multiple y-axis values in a list to create a stacked bar chart")
+            else:
+                self.df.set_index(self.x, inplace=True)
+
+                # Initialise bottom array to zero
+                left = np.zeros(len(self.df))
+
+                # Create chart for each category
+                if len(self.y) > len(colour_palette):
+                    raise ValueError(f"You have more y-axis values ({len(self.y)}) than colours in the palette ({len(colour_palette)}), please provide a larger palette")
+                elif type(colour_palette) != list:
+                    raise ValueError("You need to supply a colour palette with more than one value to create a stacked bar chart")
+                else:
+                    for i, item in enumerate (self.y):
+                        ax.barh(self.df.index, self.df[item], left=left, label=item, color=colour_palette[i])
+                        left += self.df[item] # update the bottom for the next stack
+
+                ax.set_xlabel(xlabel=x_label)
+                ax.set_ylabel(ylabel=y_label)
+                self._legend(legend=legend, legend_loc=legend_loc, legend_plot_area=legend_plot_area)
+                ax.set_title(label=title)
+                self.df.reset_index(inplace=True)
+
+                print('Colour Palette - ', colour_palette)
+
+                return ax
+        else:
+            raise ValueError("You need to supply a dataframe to create a Horizontal stacked bar chart")
+
+
+class GroupedBar(CreateChart):
+    def __init__(self, x, y, df=None):
+        super().__init__(x, y, df)
+
+    def plot(self, x_label = '', y_label = '', title = '', colour_palette = , legend = True, legend_loc = 'lower center', legend_plot_area = 'outside', theme = ):
+        plt.style.use(theme)
+        fig, ax = plt.subplots(layout='constrained')
+
+        # Create stacked bar from df
+        if self.df is not None:
+            if type(self.y) != list:
+                raise ValueError("You need to supply multiple y-axis values in a list to create a grouped bar chart")
+            else:
+                self.df.set_index(self.x, inplace=True)
+
+                # Define label locations and bar width
+                x = np.arange(len(self.df.index)) # label locations
+                width = 0.25 #bar widths
+
+                # Create chart for each category
+                if len(self.y) > len(colour_palette):
+                    raise ValueError(f"You have more y-axis values ({len(self.y)}) than colours in the palette ({len(colour_palette)}), please provide a larger palette")
+                elif type(colour_palette) != list:
+                    raise ValueError("You need to supply a colour palette with more than one value to create a grouped bar chart")
+                else:
+                    for i, item in enumerate (self.y):
+                        offset = width * i
+                        ax.bar(x + offset, self.df[item], width, label=item, color=colour_palette[i])
+
+                    ax.set_xticks((x-(0.5*width)) + ((width*len(self.y))/2), self.df.index)
+
+                ax.set_xlabel(xlabel=x_label)
+                ax.set_ylabel(ylabel=y_label)
+                self._legend(legend=legend, legend_loc=legend_loc, legend_plot_area=legend_plot_area)
+                ax.set_title(label=title)
+                self.df.reset_index(inplace=True)
+
+                print('Colour Palette - ', colour_palette)
+
+                return ax
+        else:
+            raise ValueError("You need to supply a dataframe to create a grouped bar chart")
+
+
+class Line(CreateChart):
+    def __init__(self, x, y, df=None):
+        super().__init__(x, y, df)
+
+    def plot(self, x_label = '', y_label = '', title = '', colour_palette=, legend = False, legend_loc = 'lower center', legend_plot_area = 'outside', theme =):
+        plt.style.use(theme)
+        fig, ax = plt.subplots(layout='constrained')
+
+        # Create line chart from dataframe
+        if self.df is not None:
+            if type(self.y) != list:
+                ax.plot(self.df[self.x], self.df[self.y], c=colour_palette)
+            elif type(self.y) == list:
+                for i, item in enumerate(self.y):
+                    ax.plot(self.df[self.x], self.df[item], label=item, color=colour_palette[i])
+
+        elif self.df is None and type(self.y) != list:
+            ax.plot(self.x, self.y, color=colour_palette)
+
 
