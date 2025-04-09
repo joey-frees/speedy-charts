@@ -75,6 +75,7 @@ class CreateChart:
 
         return category_colours
 
+
 class Bar(CreateChart):
     def __init__(self, x, y, df = None, category_column = None, category_list = None, custom_ranges = None):
         super().__init__(x, y, df, category_column, category_list, custom_ranges)
@@ -94,10 +95,93 @@ class Bar(CreateChart):
                 handles = sorted(handles, key=lambda handle: list(self.df[self.category_column].unique()).index(handle.get_label()))
 
             # Create bar chart where category column and a custom order is specified
-            if self.category_list is not None and self.custom_ranges is None and self.category_column is not None:
+            elif self.category_list is not None and self.custom_ranges is None and self.category_column is not None:
                 colour_list = self.convert_hex_list_to_rgba(colour_palette)
                 category_colours = self.create_colour_categories(self.df, self.category_column, colour_list, self.category_list)
                 ax.bar(self.df[self.x], self.df[self.y], color=self.df['colour'])
                 handles = [mpatches.Patch(color=category_colours[category], label=category) for category in self.category_list]
                 handles = sorted(handles, key=lambda handle: self.category_list.index(handle.get_label()))
+
+            # Create bar chart where category column, custom order and custom numeric ranges is specified
+            elif self.category_list is not None and self.custom_ranges is not None and self.category_column is not None:
+                colour_list = self.convert_hex_list_to_rgba(colour_palette)
+                category_colours = self.create_colour_categories(self.df, self.category_column, colour_list, self.category_list, self.custom_ranges)
+                ax.bar(self.df[self.x], self.df[self.y], color=self.df['colour'])
+                handles = [mpatches.Patch(color=category_colours[category], label=category) for category in self.category_list]
+                handles = sorted(handles, key=lambda handle: self.category_list.index(handle.get_label()))
+
+            else:
+                ax.bar(self.df[self.x], self.df[self.y], color=colour_palette)
+
+        # Create bar from lists/arrays
+        else:
+            ax.bar(self.x, self.y, color= colour_palette)
+
+        ax.set_xlabel(xlabel=x_label)
+        ax.set_ylabel(ylabel=y_label)
+        ax.set_title(label=title)
+
+        # Add legend to plot
+        if self.custom_ranges is None and self.category_list is None and self.category_column is None:
+            self._legend(legend=legend, legend_loc=legend_loc)
+
+        elif self.custom_ranges is not None and self.category_list is None:
+            raise ValueError(
+                f"When providing a custom_ranges argument you must also provide a category_list argument to assign names to the ranges"
+            )
+        else:
+            # Apply custom legend where category column has been specified
+            if legend_plot_area == 'inside':
+                # Place legend inside plot area
+                ax.legend(handles=handles, loc=legend_loc)
+            else:
+                # Place the legend outside teh plot area
+                if 'upper' not in legend_loc and 'lower' not in legend_loc:
+                    ax.legend(handles=handles, bbox_to_anchor=(1.05, 1), loc=legend_loc, borderaxespad=0)
+                else:
+                    num_items = len(handles)
+                    ax.legend(handles=handles, loc=legend_loc, bbox_to_anchor=(0.5, -0.2), ncol=num_items)
+
+        print('Colour Palette - ', colour_palette)
+
+        return ax
+
+
+class StackedBar(CreateChart):
+    def __init__(self, x, y, df=None):
+        super().__init__(x, y, df)
+
+    def plot(self, x_label = '', y_label = '', title = '', colour_palette = , legend = True, legend_loc = 'lower center', legend_plot_area = 'outside', theme = ):
+        plt.style.use(theme)
+        fig, ax = plt.subplots(layout='constrained')
+
+        # Create stacked bar from df
+        if self.df is not None:
+            if type(self.y) != list:
+                raise ValueError("You need to supply multiple y-axis values in a list to create a stacked bar chart")
+            else:
+                self.df.set_index(self.x, inplace=True)
+
+                # Initialise bottom array to zero
+                bottom = np.zeros(len(self.df))
+
+                # Create chart for each category
+                if len(self.y) > len(colour_palette):
+                    raise ValueError(f"You have more y-axis values ({len(self.y)}) than colours in the palette ({len(colour_palette)}), please provide a larger palette")
+                elif type(colour_palette) != list:
+                    raise ValueError("You need to supply a colour palette with more than one value to create a stacked bar chart")
+                else:
+                    for i, item in enumerate (self.y):
+                        ax.bar(self.df.index, self.df[item], bottom=bottom, label=item, color=colour_palette[i])
+                        bottom += self.df[item] # update the bottom for the next stack
+
+                ax.set_xlabel(xlabel=x_label)
+                ax.set_ylabel(ylabel=y_label)
+                self._legend(legend=legend, legend_loc=legend_loc, legend_plot_area=legend_plot_area)
+                ax.set_title(label=title)
+                self.df.reset_index(inplace=True)
+
+                print('Colour Palette - ', colour_palette)
+
+                return ax
 
