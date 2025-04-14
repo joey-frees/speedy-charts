@@ -1,4 +1,5 @@
 import matplotlib
+matplotlib.use('TkAgg')
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
@@ -81,7 +82,7 @@ class Bar(CreateChart):
     def __init__(self, x, y, df = None, category_column = None, category_list = None, custom_ranges = None):
         super().__init__(x, y, df, category_column, category_list, custom_ranges)
 
-    def plot(self, x_label = '', y_label = '', title = '', colour_palette = af_categorical, legend = False, legend_loc = 'lower center', legend_plot_area = 'outside', theme = 'classic'  ):
+    def plot(self, x_label = '', y_label = '', title = '', colour_palette = af_categorical, legend = False, legend_loc = 'lower center', legend_plot_area = 'outside', theme = 'fivethirtyeight'):
         plt.style.use(theme)
         fig, ax = plt.subplots(layout = 'constrained')
 
