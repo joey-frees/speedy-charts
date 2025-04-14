@@ -5,6 +5,7 @@ import pandas as pd
 import warnings
 from matplotlib.colors import to_rgba, ListedColormap
 import matplotlib.patches as mpatches
+from src.speedy_charts.palettes import af_categorical
 
 class CreateChart:
     def __init__(self, x, y, df = None, category_column = None, category_list = None, custom_ranges = None):
@@ -80,7 +81,7 @@ class Bar(CreateChart):
     def __init__(self, x, y, df = None, category_column = None, category_list = None, custom_ranges = None):
         super().__init__(x, y, df, category_column, category_list, custom_ranges)
 
-    def plot(self, x_label = '', y_label = '', title = '', colour_palette = , legend = False, legend_loc = 'lower center', legend_plot_area = 'outside', theme = ):
+    def plot(self, x_label = '', y_label = '', title = '', colour_palette = af_categorical, legend = False, legend_loc = 'lower center', legend_plot_area = 'outside', theme = 'classic'  ):
         plt.style.use(theme)
         fig, ax = plt.subplots(layout = 'constrained')
 
@@ -151,7 +152,7 @@ class StackedBar(CreateChart):
     def __init__(self, x, y, df=None):
         super().__init__(x, y, df)
 
-    def plot(self, x_label = '', y_label = '', title = '', colour_palette = , legend = True, legend_loc = 'lower center', legend_plot_area = 'outside', theme = ):
+    def plot(self, x_label = '', y_label = '', title = '', colour_palette = af_categorical, legend = True, legend_loc = 'lower center', legend_plot_area = 'outside', theme = 'classic'):
         plt.style.use(theme)
         fig, ax = plt.subplots(layout='constrained')
 
@@ -192,7 +193,7 @@ class HorizontalStackedBar(CreateChart):
     def __init__(self, x, y, df=None):
         super().__init__(x, y, df)
 
-    def plot(self, x_label = '', y_label = '', title = '', colour_palette = , legend = True, legend_loc = 'lower center', legend_plot_area = 'outside', theme = ):
+    def plot(self, x_label = '', y_label = '', title = '', colour_palette = af_categorical, legend = True, legend_loc = 'lower center', legend_plot_area = 'outside', theme = 'classic'):
         plt.style.use(theme)
         fig, ax = plt.subplots(layout='constrained')
 
@@ -233,7 +234,7 @@ class GroupedBar(CreateChart):
     def __init__(self, x, y, df=None):
         super().__init__(x, y, df)
 
-    def plot(self, x_label = '', y_label = '', title = '', colour_palette = , legend = True, legend_loc = 'lower center', legend_plot_area = 'outside', theme = ):
+    def plot(self, x_label = '', y_label = '', title = '', colour_palette = af_categorical, legend = True, legend_loc = 'lower center', legend_plot_area = 'outside', theme = 'classic'):
         plt.style.use(theme)
         fig, ax = plt.subplots(layout='constrained')
 
@@ -277,7 +278,7 @@ class Line(CreateChart):
     def __init__(self, x, y, df=None):
         super().__init__(x, y, df)
 
-    def plot(self, x_label = '', y_label = '', title = '', colour_palette=, legend = False, legend_loc = 'lower center', legend_plot_area = 'outside', theme =):
+    def plot(self, x_label = '', y_label = '', title = '', colour_palette= af_categorical, legend = False, legend_loc = 'lower center', legend_plot_area = 'outside', theme = 'classic'):
         plt.style.use(theme)
         fig, ax = plt.subplots(layout='constrained')
 
@@ -305,7 +306,7 @@ class Scatter(CreateChart):
     def __init__(self, x, y, df=None, category_column=None, category_list=None, custom_ranges=None):
         super().__init__(x, y, df, category_column, category_list, custom_ranges)
 
-    def plot(self, x_label = '', y_label = '', title = '', colour_palette = , legend = True, legend_loc = 'lower center', legend_plot_area = 'outside', theme = ):
+    def plot(self, x_label = '', y_label = '', title = '', colour_palette = af_categorical, legend = True, legend_loc = 'lower center', legend_plot_area = 'outside', theme = 'classic' ):
         plt.style.use(theme)
         fig, ax = plt.subplots(layout='constrained')
 
@@ -356,10 +357,10 @@ class Scatter(CreateChart):
         # Create scatter with multiple y_axis values specified
         elif type(self.y) == list and self.category_column is None:
             for i, item in enumerate(self.y):
-                ax.scatter(self.x, self.y, color=)
+                ax.scatter(self.x, self.y, color= af_categorical)
 
         elif self.df is None and type(self.y) != list:
-            ax.scatter(self.x, self.y, color = )
+            ax.scatter(self.x, self.y, color = af_categorical[0] )
 
         ax.set_xlabel(xlabel=x_label)
         ax.set_ylabel(ylabel=y_label)
