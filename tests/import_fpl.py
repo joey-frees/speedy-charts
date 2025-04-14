@@ -309,4 +309,84 @@ class Scatter(CreateChart):
         plt.style.use(theme)
         fig, ax = plt.subplots(layout='constrained')
 
+        #Create scatter plot from dataframe
+        if self.df is not None:
+
+            # Basic Scatter with no category split
+            if type(self.y) != list and self.category_column is None:
+                ax.scatter(self.df[self.x], self.df[self.y])
+
+            # Scatter plot with category split but without custom order specified
+            elif type(self.y) != list and self.category_column is not None and self.category_list is None and len(colour_palette) >= len(self.df[self.category_column].unique()):
+                # Create a color map for the categories
+                colour_list = self.convert_hex_list_to_rgba(colour_palette)
+                category_colours = self.create_colour_categories(self.df, self.category_column, colour_list, self.category_list)
+                ax.scatter(self.df[self.x], self.df[self.y], c=self.df['colour'])
+                handles = [mpatches.Patch(color = category_colours[category], label = category) for category in self.df[self.category_column].unique()]
+
+            # Scatter plot with category split and custom category order specified
+            elif self.category_list is not None and self.custom_ranges is None and len(colour_palette) >= len(self.category_list):
+            # Create a color map for the categories
+                colour_list = self.convert_hex_list_to_rgba(colour_palette)
+                category_colours = self.create_colour_categories(self.df, self.category_column, colour_list, self.category_list)
+                ax.scatter(self.df[self.x], self.df[self.y], c=self.df['colour'])
+                handles = [mpatches.Patch(color=category_colours[category], label=category) for category in self.category_list]
+                handles = sorted(handles, key=lambda handle: self.category_list.index(handle.get_label()))
+
+            # Scatter plot with category split and custom category order and custom numeric ranges
+            elif self.category_list is not None and self.custom_ranges is not None and len(colour_palette) >= (len(self.custom_ranges)-1):
+            # Create a color map for the categories
+                colour_list = self.convert_hex_list_to_rgba(colour_palette)
+                category_colours = self.create_colour_categories(self.df, self.category_column, colour_list, self.category_list, self.custom_ranges)
+                ax.scatter(self.df[self.x], self.df[self.y], c=self.df['colour'])
+                handles = [mpatches.Patch(color=category_colours[category], label=category) for category in self.category_list]
+                handles = sorted(handles, key=lambda handle: self.category_list.index(handle.get_label()))
+
+            elif self.custom_ranges is not None and self.category_list is None:
+                raise ValueError(
+                    f"When providing custom ranges, you need to also provide a category list to assign names to the ranges"
+                )
+
+            # Raise error if number of colours required is larger than the palette (too many categories)
+            else:
+                raise ValueError(
+                    f" You have more categories ({len(self.df[self.category_column].unique())}) than colours in the palette ({len(colour_palette)}), please provide a larger palette or choose a column with fewer categories"
+                )
+
+        # Create scatter with multiple y_axis values specified
+        elif type(self.y) == list and self.category_column is None:
+            for i, item in enumerate(self.y):
+                ax.scatter(self.x, self.y, color=)
+
+        elif self.df is None and type(self.y) != list:
+            ax.scatter(self.x, self.y, color = )
+
+        ax.set_xlabel(xlabel=x_label)
+        ax.set_ylabel(ylabel=y_label)
+        ax.set_title(label=title)
+
+        # Add legend to plot
+        if self.category_column is None:
+            self._legend(legend = legend, legend_loc = legend_loc)
+        else:
+            # Apply custom legend where category column has been specified
+            if legend_plot_area == 'inside':
+                ax.legend(handles = handles, loc = legend_loc)
+            else:
+                # Place the legend outside the plot area
+                if 'upper' not in legend_loc and 'lower' not in legend_loc:
+                    ax.legend(handles = handles, bbox_to_anchor=(1.05, 1), loc=legend_loc, borderaxespad=0)
+
+                else:
+                    num_items = len(handles)
+                    ax.legend(handles = handles, loc = legend_loc, bbox_to_anchar=(0.5, -0.2), ncol=num_items)
+
+        print('Colour Palette - ', colour_palette)
+
+        return ax
+
+
+
+
+
 
