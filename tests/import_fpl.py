@@ -292,4 +292,21 @@ class Line(CreateChart):
         elif self.df is None and type(self.y) != list:
             ax.plot(self.x, self.y, color=colour_palette)
 
+            ax.set_xlabel(x_label=x_label)
+            ax.set_ylabel(y_label=y_label)
+            ax.set_title(label=title)
+            self._legend(legend=legend, legend_loc=legend_loc, legend_plot_area=legend_plot_area)
+
+            print('Colour Palette - ', colour_palette)
+
+            return ax
+
+class Scatter(CreateChart):
+    def __init__(self, x, y, df=None, category_column=None, category_list=None, custom_ranges=None):
+        super().__init__(x, y, df, category_column, category_list, custom_ranges)
+
+    def plot(self, x_label = '', y_label = '', title = '', colour_palette = , legend = True, legend_loc = 'lower center', legend_plot_area = 'outside', theme = ):
+        plt.style.use(theme)
+        fig, ax = plt.subplots(layout='constrained')
+
 
