@@ -248,7 +248,8 @@ class GroupedBar(CreateChart):
 
                 # Define label locations and bar width
                 x = np.arange(len(self.df.index)) # label locations
-                width = 0.25 #bar widths
+                n_groups = len(self.y)
+                width = 1 / (n_groups + 1) # Bar widths
 
                 # Create chart for each category
                 if len(self.y) > len(colour_palette):

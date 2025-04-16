@@ -19,7 +19,7 @@ plt.show()
 
 
 # Grouped Bar
-bar = GroupedBar(x = 'team_x', y = ['goals_scored', 'yellow_cards'], df = df_season_team)
+bar = GroupedBar(x = 'team_x', y = ['goals_scored', 'assists', 'yellow_cards', 'red_cards', 'minutes'], df = df_season_team)
 
 bar.plot(colour_palette=af_categorical)
 

@@ -8,7 +8,8 @@ df_season_team = df_season.groupby('team_x').agg({
     'goals_scored': 'sum',
     'assists': 'sum',
     'yellow_cards': 'sum',
-    'red_cards': 'sum'
+    'red_cards': 'sum',
+    'minutes': 'mean'
 }).reset_index()
 
 df_season_players = df_season.groupby('name').agg({
