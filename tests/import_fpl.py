@@ -23,6 +23,14 @@ df_season_players = df_season.groupby('name').agg({
     'influence': 'mean'
 }).reset_index()
 
+df_haaland = df_season[df_season['name'] == 'Erling Haaland']
+
+df_haaland = df_haaland.copy()
+
+df_haaland.loc[:,'cumulative_goals'] = df_haaland['goals_scored'].cumsum()
+
+df_haaland.loc[:,'cumulative_assists'] = df_haaland['assists'].cumsum()
+
 
 
 
