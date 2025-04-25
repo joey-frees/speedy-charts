@@ -40,10 +40,10 @@ class CreateChart:
     def create_colour_categories(self, df, cat_col, colours, category_list = None):
         if pd.api.types.is_numeric_dtype(df[cat_col]) is True:
             raise ValueError(
-                f"The column {cat_col} is numeric, please provide a non-numeric categorical column to create colour categories, if you wish to create categories based on the numeric column, add a custom_ranges argument"
-            )
+                f"The column {cat_col} is numeric, please provide a non-numeric categorical column to create colour categories, if you wish to create categories based on the numeric column, add a custom_ranges argument")
         else:
             colour_list = self.convert_hex_list_to_rgba(colours)
+
             cmap = ListedColormap(colour_list)
 
             # Map categories to colours
@@ -82,7 +82,7 @@ class Bar(CreateChart):
     def __init__(self, x, y, df = None, category_column = None, category_list = None, custom_ranges = None):
         super().__init__(x, y, df, category_column, category_list, custom_ranges)
 
-    def plot(self, x_label = '', y_label = '', title = '', colour_palette = af_categorical, legend = False, legend_loc = 'lower center', legend_plot_area = 'outside', theme = 'fivethirtyeight'):
+    def plot(self, x_label = '', y_label = '', title = '', colour_palette = af_categorical, legend = False, legend_loc = 'upper center', legend_plot_area = 'outside', theme = 'fivethirtyeight'):
         plt.style.use(theme)
         fig, ax = plt.subplots(layout = 'constrained')
 
@@ -107,7 +107,7 @@ class Bar(CreateChart):
             # Create bar chart where category column, custom order and custom numeric ranges is specified
             elif self.category_list is not None and self.custom_ranges is not None and self.category_column is not None:
                 colour_list = self.convert_hex_list_to_rgba(colour_palette)
-                category_colours = self.create_colour_categories(self.df, self.category_column, colour_list, self.category_list, self.custom_ranges)
+                category_colours = self.create_colour_ranges(self.df, self.category_column, colour_list, self.category_list, self.custom_ranges)
                 ax.bar(self.df[self.x], self.df[self.y], color=self.df['colour'])
                 handles = [mpatches.Patch(color=category_colours[category], label=category) for category in self.category_list]
                 handles = sorted(handles, key=lambda handle: self.category_list.index(handle.get_label()))
@@ -123,6 +123,8 @@ class Bar(CreateChart):
         ax.set_ylabel(ylabel=y_label)
         ax.set_title(label=title)
 
+        plt.subplots_adjust(bottom=0.3)
+
         # Add legend to plot
         if self.custom_ranges is None and self.category_list is None and self.category_column is None:
             self._legend(legend=legend, legend_loc=legend_loc)
@@ -137,7 +139,7 @@ class Bar(CreateChart):
                 # Place legend inside plot area
                 ax.legend(handles=handles, loc=legend_loc)
             else:
-                # Place the legend outside teh plot area
+                # Place the legend outside the plot area
                 if 'upper' not in legend_loc and 'lower' not in legend_loc:
                     ax.legend(handles=handles, bbox_to_anchor=(1.05, 1), loc=legend_loc, borderaxespad=0)
                 else:
@@ -153,7 +155,7 @@ class StackedBar(CreateChart):
     def __init__(self, x, y, df=None):
         super().__init__(x, y, df)
 
-    def plot(self, x_label = '', y_label = '', title = '', colour_palette = af_categorical, legend = True, legend_loc = 'lower center', legend_plot_area = 'outside', theme = 'fivethirtyeight'):
+    def plot(self, x_label = '', y_label = '', title = '', colour_palette = af_categorical, legend = True, legend_loc = 'upper center', legend_plot_area = 'outside', theme = 'fivethirtyeight'):
         plt.style.use(theme)
         fig, ax = plt.subplots(layout='constrained')
 
@@ -182,6 +184,8 @@ class StackedBar(CreateChart):
                 self._legend(legend=legend, legend_loc=legend_loc, legend_plot_area=legend_plot_area)
                 ax.set_title(label=title)
                 self.df.reset_index(inplace=True)
+
+                plt.subplots_adjust(bottom=0.3)
 
                 print('Colour Palette - ', colour_palette)
 
@@ -235,7 +239,7 @@ class GroupedBar(CreateChart):
     def __init__(self, x, y, df=None):
         super().__init__(x, y, df)
 
-    def plot(self, x_label = '', y_label = '', title = '', colour_palette = af_categorical, legend = True, legend_loc = 'lower center', legend_plot_area = 'outside', theme = 'fivethirtyeight'):
+    def plot(self, x_label = '', y_label = '', title = '', colour_palette = af_categorical, legend = True, legend_loc = 'upper center', legend_plot_area = 'outside', theme = 'fivethirtyeight'):
         plt.style.use(theme)
         fig, ax = plt.subplots(layout='constrained')
 
@@ -269,6 +273,8 @@ class GroupedBar(CreateChart):
                 ax.set_title(label=title)
                 self.df.reset_index(inplace=True)
 
+                plt.subplots_adjust(bottom=0.3)
+
                 print('Colour Palette - ', colour_palette)
 
                 return ax
@@ -280,7 +286,7 @@ class Line(CreateChart):
     def __init__(self, x, y, df=None):
         super().__init__(x, y, df)
 
-    def plot(self, x_label = '', y_label = '', title = '', colour_palette= af_categorical, legend = False, legend_loc = 'lower center', legend_plot_area = 'outside', theme = 'fivethirtyeight'):
+    def plot(self, x_label = '', y_label = '', title = '', colour_palette= af_categorical, legend = False, legend_loc = 'upper center', legend_plot_area = 'outside', theme = 'fivethirtyeight'):
         plt.style.use(theme)
         fig, ax = plt.subplots(layout='constrained')
 
@@ -295,20 +301,20 @@ class Line(CreateChart):
         elif self.df is None and type(self.y) != list:
             ax.plot(self.x, self.y, color=colour_palette)
 
-            ax.set_xlabel(x_label=x_label)
-            ax.set_ylabel(y_label=y_label)
-            ax.set_title(label=title)
-            self._legend(legend=legend, legend_loc=legend_loc, legend_plot_area=legend_plot_area)
+        ax.set_xlabel(xlabel=x_label)
+        ax.set_ylabel(ylabel=y_label)
+        ax.set_title(label=title)
+        self._legend(legend=legend, legend_loc=legend_loc, legend_plot_area=legend_plot_area)
 
-            print('Colour Palette - ', colour_palette)
+        print('Colour Palette - ', colour_palette)
 
-            return ax
+        return ax
 
 class Scatter(CreateChart):
     def __init__(self, x, y, df=None, category_column=None, category_list=None, custom_ranges=None):
         super().__init__(x, y, df, category_column, category_list, custom_ranges)
 
-    def plot(self, x_label = '', y_label = '', title = '', colour_palette = af_categorical, legend = True, legend_loc = 'lower center', legend_plot_area = 'outside', theme = 'fivethirtyeight' ):
+    def plot(self, x_label = '', y_label = '', title = '', colour_palette = af_categorical, legend = True, legend_loc = 'upper center', legend_plot_area = 'outside', theme = 'fivethirtyeight' ):
         plt.style.use(theme)
         fig, ax = plt.subplots(layout='constrained')
 
@@ -367,6 +373,8 @@ class Scatter(CreateChart):
         ax.set_xlabel(xlabel=x_label)
         ax.set_ylabel(ylabel=y_label)
         ax.set_title(label=title)
+
+        plt.subplots_adjust(bottom=0.3)
 
         # Add legend to plot
         if self.category_column is None:

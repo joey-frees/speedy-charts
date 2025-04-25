@@ -8,7 +8,7 @@ from speedy_charts.charts import Bar, GroupedBar, StackedBar, HorizontalStackedB
 from speedy_charts.palettes import af_categorical
 
 
-# Bar
+# Simple Bar
 bar = Bar(x = 'team_x', y = 'goals_scored', df = df_season_team)
 
 bar.plot(colour_palette=af_categorical[0])
@@ -18,10 +18,19 @@ plt.xticks(rotation=45, ha = 'right')
 plt.show()
 
 
-# Grouped Bar
-bar = GroupedBar(x = 'team_x', y = ['goals_scored', 'assists', 'yellow_cards', 'red_cards', 'minutes'], df = df_season_team)
+bar = Bar(x = 'team_x', y = 'goals_scored', df = df_season_team, category_column='goals_scored', category_list=['low', 'medium', 'high'], custom_ranges=[0,50,75,float('inf')])
 
-bar.plot(colour_palette=af_categorical)
+bar.plot(x_label='Team', y_label='Goals', title='Goals by team')
+
+plt.xticks(rotation=45, ha = 'right')
+
+plt.show()
+
+
+# Grouped Bar
+bar = GroupedBar(x = 'team_x', y = ['goals_scored', 'assists', 'yellow_cards'], df = df_season_team)
+
+bar.plot(colour_palette=af_categorical, title='Stats by Team', x_label='Team', y_label='Goals/Assists/Yellow Cards', legend=True)
 
 plt.xticks(rotation=45, ha = 'right')
 
@@ -29,9 +38,9 @@ plt.show()
 
 
 # Stacked Bar
-bar = StackedBar(x = 'team_x', y = ['goals_scored', 'assists'], df = df_season_team)
+bar = StackedBar(x = 'team_x', y = ['goals_scored', 'assists', 'yellow_cards'], df = df_season_team)
 
-bar.plot(colour_palette=af_categorical)
+bar.plot(colour_palette=af_categorical, title='Stats by Team', x_label='Team', y_label='Goals/Assists/Yellow Cards', legend=True)
 
 plt.xticks(rotation=45, ha = 'right')
 
@@ -39,17 +48,18 @@ plt.show()
 
 
 # Horizontal Stacked Bar
-bar = HorizontalStackedBar(x = 'team_x', y = ['goals_scored', 'assists'], df = df_season_team)
+bar = HorizontalStackedBar(x = 'team_x', y = ['goals_scored', 'assists', 'yellow_cards'], df = df_season_team)
 
-bar.plot(colour_palette=af_categorical)
+bar.plot(colour_palette=af_categorical, title='Stats by Team', x_label='Goals/Assists/Yellow Cards', y_label='Team', legend=True)
 
 plt.show()
+
 
 
 # Line
 chart = Line(x = 'GW', y = ['cumulative_goals', 'cumulative_assists'], df = df_haaland)
 
-chart.plot()
+chart.plot(title='Haaland - Cumulative goals/assists', x_label='GW', y_label='Goals/Assists', legend=True)
 
 plt.show()
 
