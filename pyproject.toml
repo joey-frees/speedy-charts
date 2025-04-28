@@ -1,0 +1,25 @@
+[project]
+name = "speedy-charts"
+version = "1.0.0"
+authors = [
+    {name="Joe Freestone", email="joe.freestone222@gmail.com"}
+]
+description = "A convenient wrapper for matplotlib which makes plotting simple charts easier"
+readme = "README.md"
+requires-python = ">=3.8"
+
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent",
+    "License :: OSI Approved :: MIT License"
+]
+
+[project.urls]
+Homepage = "https://github.com/joey-frees/speedy-charts"
+Issues = "https://github.com/joey-frees/speedy-charts/issues"
+
+[tool.setuptools]
+include-package-data = true
+
+[tool.setuptools.package-data]
+"speedy_charts" = ["mplstyles/*.mplstyle"]

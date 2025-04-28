@@ -1,215 +1,5 @@
-# speedy-charts
+import pandas as pd
 
-## Description
-This package is designed to make simple plotting easier, applying a logical syntax to a matplotlib backend!
-
-The following chart types are supported: Bar, Line, Scatter, Stacked Bar, Horizontal Stacked Bar, Grouped Bar
-
-## Installation
-To install the package, run the following code in the terminal:
-```terminal
-pip install speedy_charts@git+https://github.com/joey-frees/speedy-charts
-```
-Or run an equivalent command for your package manager of choice, for example in poetry:
-```terminal 
-poetry add speedy_charts@git+https://github.com/joey-frees/speedy-charts
-```
-
-## Usage
-### Importing the package
-To use the package you should use the following import statements at the top of your script:
-
-```python
-import matplotlib
-matplotlib.use('TkAgg')
-import matplotlib.pyplot as plt
-
-from speedy_charts.charts import Bar, Scatter, StackedBar, HorizontalStackedBar, GroupedBar, Line
-from speedy_charts.palettes import af_categorical
-```
-
-You can choose to only specify the charts and palettes htat you need for your specific task.
-
-The ```matplotlib.use('TkAgg')``` ensures that the plots can be displayed interactively.
-
-### General usage guidance
-The package syntax is based around two elements:
-1. The chart object - here, you specify arguments relating to the data that goes into the chart
-2. The plot method - here, you specify arguments relating to the visual aspects of the chart
-
-The chart object for example, contains arguments relating to the dataframe you are plotting from, x/y axis values and categorisation if applicable.
-
-The plot method on the other hand, contains arguments relating to colour palette, title, x/y axis labels and legend.
-
-You can also apply any additional transformations to the chart that aren't included in the plot method using standard matplotlib pyplot methods.
-
-**__Please note, you can recreate all of the dataframes used in the example code by running the code in '[Dataframes for chart examples](https://github.com/joey-frees/speedy-charts/tree/main?tab=readme-ov-file#dataframes-for-chart-examples)' section below.__**
-
-### Bar
-#### Basic Bar
-For a basic bar chart, you need to provide, x and y axis values and the dataframe in the chart object.
-
-All other arguments, including those in the plot method are optional, however axis labels and a title are recommended at a minimum.
-
-```python
-bar = Bar(x = 'team_x', y = 'goals_scored', df = df_season_team)
-
-plt.xticks(rotation=45, ha = 'right')
-
-plt.show()
-```
-
-<img src="assets/basic_bar.png" alt="Description" width="800" height="480">
-
-This code creates a basic bar chart, but also includes a transformation using a standard matplotlib method 'xticks' to rotate the x-axis labels.
-
-
-#### Applying categorical colours
-You can also add category arguments to a standard bar chart to colour the bars by a categorical or numeric variable:
-* If using a categorical column, this can be achieved by providing the 'category_column' arguments
-* If using a numeric column, this can be achieved by providing the 'category_column', 'category_list' and 'custom_ranges' arguments
-
-```python
-chart = Bar(x = 'team_x', y = 'goals_scored', df = df_season_team, category_column='goals_scored', category_list=['low', 'medium', 'high'], custom_ranges=[0,50,75,float('inf')])
-
-chart.plot(x_label='Team', y_label='Goals', title='Goals by team')
-
-plt.xticks(rotation=45, ha = 'right')
-
-plt.show()
-```
-
-<img src="assets/bar.png" alt="Description" width="800" height="480">
-
-
-In this example, the 'custom_ranges' argument specifies the ranges of the category_column that the colours will correspond to and the 'category_list' argument provides names for the ranges.
-Please note that the 'category_list' is always one element smaller than the 'custom_ranges', list.
-
-### Grouped Bar
-A grouped bar chart takes the same arguments as a standard bar chart but requires multiple y-axis values passed as a list.
-
-```python
-chart = GroupedBar(x = 'team_x', y = ['goals_scored', 'assists', 'yellow_cards'], df = df_season_team)
-
-chart.plot(colour_palette=af_categorical, title='Stats by Team', x_label='Team', y_label='Goals/Assists/Yellow Cards', legend=True)
-
-plt.xticks(rotation=45, ha = 'right')
-
-plt.show()
-```
-
-<img src="assets/grouped_bar.png" alt="Description" width="800" height="480">
-
-### Stacked Bar
-A stacked bar chart takes the same arguments as a standard bar chart but requires multiple y-axis values passed as a list, similar to the grouped bar.
-
-```python
-chart = StackedBar(x = 'team_x', y = ['goals_scored', 'assists', 'yellow_cards'], df = df_season_team)
-
-chart.plot(colour_palette=af_categorical, title='Stats by Team', x_label='Team', y_label='Goals/Assists/Yellow Cards', legend=True)
-
-plt.xticks(rotation=45, ha = 'right')
-
-plt.show()
-```
-
-<img src="assests/stacked_bar.png" alt="Description" width="800" height="480">
-
-### Horizontal Stacked Bar
-A horizontal stacked bar chart takes the same arguments as a standard bar chart but requires multiple y-axis values passed as a list, similar to the grouped bar and stacked bar.
-
-```python
-chart = HorizontalStackedBar(x = 'team_x', y = ['goals_scored', 'assists', 'yellow_cards'], df = df_season_team)
-
-chart.plot(colour_palette=af_categorical, title='Stats by Team', x_label='Goals/Assists/Yellow Cards', y_label='Team', legend=True)
-
-plt.show()
-```
-
-<img src="assets/horizontal_bar.png" alt="Description" width="800" height="480">
-
-### Line
-The code for producing a line chart also follows the structure of the standard bar and alternative bar charts.
-If you are creating a line chart with multiple lines you can supp;ly multiple y-axis values as a list.
-
-```python
-chart = Line(x = 'GW', y = ['cumulative_goals', 'cumulative_assists'], df = df_haaland)
-
-chart.plot(title='Haaland - Cumulative goals/assists', x_label='GW', y_label='Goals/Assists', legend=True)
-
-plt.show()
-```
-
-<img src="assets/line.png" alt="Description" width="800" height="480">
-
-### Scatter
-For a basic scatter plot the syntax is very similar to any other plot with x and y-axis values and a dataframe supplied in the initial chart object and the visual options defined in the plot method
-To add in categorical colours to the plot you will need to supply a category column argument. In this example an optional 'category list' argument is also supplied to re-order the categories and an alternative colour palette specified.
-
-```python
-chart = Scatter(x = 'minutes', y = 'influence', df = df_season_players, category_column='position', category_list=['GK', 'DEF', 'MID', 'FWD'])
-
-chart.plot(title='Influence by average minutes split by position', x_label='Mean Minutes', y_label='Mean Influence')
-
-plt.show()
-```
-
-<img src="assets/scatter.png" alt="Description" width="800" height="480">
-
-Similar to the bar chart you can add in custom ranges to the scatter plot by providing the 'category_list' and 'custom_ranges' arguments. The custom ranges are defined in the same way as the bar chart.
-In addition, there is an alternative colour palette applied to the scatter
-
-```python
-chart = Scatter(x = 'minutes', y = 'influence', df = df_season_players, category_column='influence', category_list=['Low', 'Medium', 'High', 'Very High'], custom_ranges=[0, 10, 20, 30, float('inf')])
-
-chart.plot(colour_palette=['#A1DAB4', '#41B6C4', '#2C7FB8', '#003479'], title='Influence by average minutes split by position', x_label='Mean Minutes', y_label='Mean Influence')
-
-plt.show()
-```
-
-<img src="assets/scatter_ranges.png" alt="Description" width="800" height="480">
-
-### Colour Palettes
-This package also includes a number of colour palettes that can be used in the plot method. The default palette consists of categorical colours.
-You can define the colour palette you want to use by specifying the 'colour_palette' argument in the plot method.
-
-These are defined in the palettes.py file and include:
-* af_categorical - a categorical colour palette with the standard analysis function colours
-* std_sequential_5/7/9 - a sequential colour palette with 5, 7 or 9 colours
-* oth_sequential_5/7/9 - a sequential colour palette with 5, 7 or 9 alternative colours
-* std_diverging_5/7/9 - a diverging colour palette with 5, 7 or 9 colours
-* oth_diverging_5/7/9 - a diverging colour palette with 5, 7 or 9 alternative colours
-
-You can also pass a custom colour palette to a chart by supplying a list of hex codes
-
-```python
-chart = Scatter(x = 'minutes', y = 'influence', df = df_season_players, category_column='influence', category_list=['Low', 'Medium', 'High', 'Very High'], custom_ranges=[0, 10, 20, 30, float('inf')])
-
-chart.plot(colour_palette=['#A1DAB4', '#41B6C4', '#2C7FB8', '#003479'], title='Influence by average minutes split by position', x_label='Mean Minutes', y_label='Mean Influence')
-
-plt.show()
-```
-
-<img src="assets/scatter_palette.png" alt="Description" width="800" height="480">
-
-### Themes
-Standard styling is applied to the package by default, but you can also apply a custom theme to the chart by using the 'theme' argument in the plot method.
-You can use standard matplotlib themes, pre-defined mplstyles, or create your own.
-
-Below is an example of how to apply an inbuilt matplotlib style:
-
-<img src="assets/scatter_ggplot.png" alt="Description" width="800" height="480">
-
-To apply a custom theme using an mplstyle you would structure your theme argument as follows:
-
-```python
-chart.plot(theme= 'speedy_charts.mplstyles.custom_theme')
-```
-
-## Dataframes for chart examples
-All example charts can be created using the following dataframes. You need to initialise these for the example code to work.
-
-```python
 df_season_team = {
     'team_x':['Arsenal', 'Aston Villa', 'Bournemouth', 'Brentford', 'Brighton', 'Burnley', 'Chelsea', 'Crystal Palace', 'Everton', 'Fulham', 'Liverpool', 'Luton', 'Man City', 'Man Utd', 'Newcastle', "Nott'm Forest", 'Sheffield Utd', 'Spurs', 'West Ham', 'Wolves'],
     'goals_scored':[85, 72, 52, 54, 50, 40, 76, 56, 40, 54, 80, 49, 94, 57, 83, 49, 31, 69, 58, 47],
@@ -218,9 +8,8 @@ df_season_team = {
 }
 
 df_season_team = pd.DataFrame(df_season_team)
-```
 
-```python
+
 df_season_players = {
     'position': ['FWD', 'DEF', 'DEF', 'GK', 'MID', 'DEF', 'MID', 'DEF', 'GK', 'MID', 'DEF', 'DEF', 'MID', 'MID', 'FWD', 'FWD', 'GK', 'DEF', 'MID', 'MID', 'FWD', 'FWD', 'MID', 'MID', 'MID', 'DEF', 'MID', 'DEF', 'FWD', 'DEF', 'MID', 'DEF', 'DEF', 'DEF', 'GK', 'GK', 'MID', 'MID', 'GK', 'GK', 'MID', 'MID', 'MID', 'DEF', 'DEF', 'DEF', 'MID', 'FWD', 'MID', 'MID', 'DEF', 'DEF', 'MID', 'MID', 'GK', 'MID', 'GK', 'DEF', 'DEF', 'MID', 'MID', 'MID', 'MID', 'MID', 'FWD', 'FWD', 'DEF', 'MID', 'FWD', 'FWD', 'GK', 'FWD', 'MID', 'DEF', 'DEF', 'DEF', 'DEF', 'MID', 'DEF', 'GK', 'GK', 'DEF', 'MID', 'DEF', 'DEF', 'MID', 'DEF', 'DEF', 'DEF', 'DEF', 'DEF', 'MID', 'FWD', 'MID', 'DEF', 'MID', 'DEF', 'DEF', 'DEF', 'DEF', 'MID', 'GK', 'MID', 'FWD', 'GK', 'MID', 'MID', 'MID', 'DEF', 'MID', 'MID', 'MID', 'MID', 'MID', 'GK', 'DEF', 'MID', 'MID', 'MID', 'MID', 'MID', 'MID', 'MID', 'FWD', 'DEF', 'GK', 'MID', 'FWD', 'DEF', 'FWD', 'DEF', 'DEF', 'FWD', 'MID', 'GK', 'MID', 'MID', 'MID', 'FWD', 'FWD', 'MID', 'FWD', 'MID', 'MID', 'DEF', 'DEF', 'MID', 'MID', 'FWD', 'DEF', 'DEF', 'DEF', 'FWD', 'DEF', 'MID', 'MID', 'MID', 'FWD', 'DEF', 'FWD', 'MID', 'DEF', 'DEF', 'MID', 'MID', 'DEF', 'DEF', 'MID', 'DEF', 'DEF', 'DEF', 'DEF', 'DEF', 'FWD', 'MID', 'GK', 'MID', 'MID', 'FWD', 'DEF', 'MID', 'FWD', 'FWD', 'MID', 'DEF', 'MID', 'GK', 'FWD', 'MID', 'FWD', 'MID', 'GK', 'DEF', 'GK', 'MID', 'FWD', 'MID', 'MID', 'MID', 'GK', 'FWD', 'GK', 'DEF', 'FWD', 'DEF', 'DEF', 'MID', 'DEF', 'MID', 'MID', 'FWD', 'FWD', 'DEF', 'GK', 'FWD', 'MID', 'MID', 'FWD', 'MID', 'MID', 'MID', 'DEF', 'MID', 'MID', 'GK', 'FWD', 'GK', 'MID', 'FWD', 'DEF', 'GK', 'MID', 'MID', 'FWD', 'DEF', 'DEF', 'DEF', 'MID', 'MID', 'MID', 'GK', 'FWD', 'FWD', 'MID', 'MID', 'MID', 'DEF', 'DEF', 'FWD', 'DEF', 'MID', 'GK', 'MID', 'DEF', 'FWD', 'FWD', 'DEF', 'GK', 'DEF', 'MID', 'MID', 'MID', 'DEF', 'DEF', 'GK', 'DEF', 'FWD', 'MID', 'DEF', 'FWD', 'MID', 'FWD', 'MID', 'GK', 'MID', 'MID', 'MID', 'FWD', 'FWD', 'MID', 'DEF', 'GK', 'DEF', 'MID', 'MID', 'DEF', 'MID', 'GK', 'FWD', 'MID', 'MID', 'DEF', 'MID', 'DEF', 'MID', 'MID', 'GK', 'MID', 'MID', 'DEF', 'MID', 'FWD', 'MID', 'MID', 'DEF', 'MID', 'DEF', 'MID', 'DEF', 'MID', 'FWD', 'DEF', 'DEF', 'MID', 'MID', 'MID', 'MID', 'DEF', 'DEF', 'GK', 'MID', 'FWD', 'GK', 'MID', 'MID', 'DEF', 'MID', 'DEF', 'FWD', 'DEF', 'GK', 'MID', 'DEF', 'MID', 'DEF', 'DEF', 'MID', 'DEF', 'FWD', 'GK', 'MID', 'MID', 'MID', 'MID', 'DEF', 'GK', 'FWD', 'MID', 'MID', 'MID', 'MID', 'MID', 'MID', 'MID', 'MID', 'MID', 'DEF', 'DEF', 'MID', 'DEF', 'DEF', 'MID', 'MID', 'DEF', 'MID', 'MID', 'MID', 'MID', 'GK', 'DEF', 'DEF', 'DEF', 'GK', 'MID', 'GK', 'FWD', 'MID', 'DEF', 'DEF', 'DEF', 'DEF', 'MID', 'GK', 'DEF', 'FWD', 'FWD', 'DEF', 'FWD', 'MID', 'MID', 'FWD', 'MID', 'MID', 'MID', 'MID', 'MID', 'MID', 'MID', 'FWD', 'DEF', 'DEF', 'MID', 'DEF', 'FWD', 'GK', 'DEF', 'MID', 'FWD', 'DEF', 'MID', 'FWD', 'MID', 'GK', 'MID', 'DEF', 'DEF', 'DEF', 'MID', 'DEF', 'MID', 'FWD', 'MID', 'DEF', 'FWD', 'DEF', 'DEF', 'MID', 'DEF', 'GK', 'MID', 'DEF', 'MID', 'MID', 'GK', 'MID', 'GK', 'DEF', 'DEF', 'MID', 'DEF', 'MID', 'MID', 'MID', 'DEF', 'MID', 'MID', 'GK', 'DEF', 'GK', 'MID', 'FWD', 'MID', 'DEF', 'DEF', 'MID', 'FWD', 'DEF', 'DEF', 'MID', 'MID', 'MID', 'MID', 'MID', 'MID', 'DEF', 'MID', 'MID', 'DEF', 'MID', 'MID', 'GK', 'GK', 'MID', 'FWD', 'DEF', 'DEF', 'GK', 'MID', 'DEF', 'MID', 'DEF', 'MID', 'FWD', 'DEF', 'DEF', 'GK', 'MID', 'DEF', 'DEF', 'DEF', 'MID', 'DEF', 'DEF', 'DEF', 'GK', 'GK', 'MID', 'MID', 'DEF', 'MID', 'MID', 'FWD', 'MID', 'DEF', 'MID', 'MID', 'DEF', 'DEF', 'FWD', 'MID', 'MID', 'MID', 'MID', 'DEF', 'DEF', 'DEF', 'GK', 'FWD', 'MID', 'DEF', 'DEF', 'DEF', 'MID', 'MID', 'GK', 'DEF', 'MID', 'MID', 'MID', 'GK', 'MID', 'DEF', 'MID', 'MID', 'MID', 'DEF', 'FWD', 'DEF', 'DEF', 'FWD', 'MID', 'DEF', 'MID', 'DEF', 'DEF', 'MID', 'MID', 'DEF', 'MID', 'DEF', 'MID', 'DEF', 'MID', 'DEF', 'DEF', 'GK', 'DEF', 'GK', 'MID', 'MID', 'MID', 'GK', 'MID', 'GK', 'GK', 'FWD', 'GK', 'GK', 'MID', 'MID', 'FWD', 'DEF', 'MID', 'MID', 'MID', 'MID', 'FWD', 'MID', 'DEF', 'GK', 'DEF', 'GK', 'MID', 'DEF', 'GK', 'GK', 'MID', 'MID', 'DEF', 'GK', 'MID', 'DEF', 'DEF', 'DEF', 'DEF', 'DEF', 'DEF', 'MID', 'MID', 'MID', 'DEF', 'FWD', 'FWD', 'MID', 'MID', 'FWD', 'MID', 'DEF', 'DEF', 'MID', 'MID', 'MID', 'MID', 'DEF', 'DEF', 'MID', 'MID', 'MID', 'MID', 'MID', 'MID', 'MID', 'MID', 'DEF', 'DEF', 'MID', 'MID', 'MID', 'MID', 'MID', 'DEF', 'DEF', 'FWD', 'DEF', 'MID', 'DEF', 'DEF', 'DEF', 'FWD', 'DEF', 'GK', 'FWD', 'MID', 'MID', 'MID', 'MID', 'MID', 'MID', 'FWD', 'GK', 'DEF', 'DEF', 'DEF', 'DEF', 'FWD', 'GK', 'DEF', 'MID', 'FWD', 'MID', 'DEF', 'MID', 'GK', 'MID', 'FWD', 'DEF', 'DEF', 'MID', 'MID', 'MID', 'MID', 'DEF', 'DEF', 'MID', 'MID', 'MID', 'MID', 'MID', 'MID', 'DEF', 'DEF', 'MID', 'DEF', 'MID', 'DEF', 'MID', 'MID', 'MID', 'FWD', 'MID', 'GK', 'DEF', 'MID', 'DEF', 'FWD', 'DEF', 'FWD', 'DEF', 'DEF', 'MID', 'GK', 'MID', 'DEF', 'FWD', 'DEF', 'DEF', 'MID', 'DEF', 'DEF', 'DEF', 'MID', 'DEF', 'GK', 'GK', 'MID', 'FWD', 'MID', 'FWD', 'MID', 'FWD', 'MID', 'FWD', 'MID', 'MID', 'MID', 'MID', 'DEF', 'DEF', 'MID', 'MID', 'DEF', 'MID', 'MID', 'DEF', 'GK', 'DEF', 'GK', 'GK', 'FWD', 'MID', 'MID', 'MID', 'MID', 'MID', 'DEF', 'FWD', 'MID', 'MID', 'GK', 'DEF', 'MID', 'MID', 'DEF', 'MID', 'DEF', 'DEF', 'MID', 'DEF', 'DEF', 'MID', 'MID', 'FWD', 'MID', 'MID', 'MID', 'MID', 'MID', 'MID', 'GK', 'DEF', 'MID', 'GK', 'DEF', 'MID', 'MID', 'FWD', 'DEF', 'MID', 'DEF', 'MID', 'FWD', 'DEF', 'GK', 'GK', 'DEF', 'MID', 'DEF', 'MID', 'DEF', 'DEF', 'FWD', 'GK', 'MID', 'GK', 'MID', 'GK', 'DEF', 'FWD', 'DEF', 'DEF', 'MID', 'MID', 'MID', 'GK', 'GK', 'DEF', 'GK', 'MID', 'MID', 'MID', 'DEF', 'DEF', 'MID', 'DEF', 'DEF', 'MID', 'MID', 'MID', 'MID', 'DEF', 'MID', 'MID', 'DEF', 'FWD', 'DEF', 'DEF', 'DEF', 'GK', 'DEF', 'DEF', 'GK', 'GK', 'MID', 'DEF', 'DEF', 'MID', 'DEF', 'MID', 'GK', 'GK', 'DEF', 'FWD', 'DEF', 'MID', 'FWD', 'DEF', 'MID', 'DEF', 'DEF', 'MID', 'FWD', 'MID', 'MID', 'DEF', 'MID', 'MID', 'DEF', 'FWD', 'MID', 'FWD', 'MID', 'MID', 'MID', 'GK', 'DEF', 'FWD', 'DEF', 'MID', 'GK'],
     'influence': [0.0, 1.5473684210526315, 1.7526315789473683, 1.9263157894736842, 1.3837837837837839, 10.38421052631579, 12.168421052631578, 0.0, 0.0, 2.1842105263157894, 8.852631578947367, 6.636842105263158, 15.9375, 4.437837837837837, 0.0, 0.0, 0.0, 0.0, 7.430769230769231, 13.873684210526317, 0.9263157894736843, 0.16842105263157894, 13.26842105263158, 0.0, 0.0, 0.06842105263157895, 5.184210526315789, 0.0, 23.089473684210525, 5.731578947368422, 18.74736842105263, 0.0, 18.142105263157895, 2.076470588235294, 0.0, 17.663157894736845, 0.0, 0.0, 26.926315789473687, 0.0, 3.0789473684210527, 0.0, 9.31578947368421, 0.0, 8.868421052631579, 4.5473684210526315, 0.17894736842105263, 0.0, 2.3157894736842106, 13.25263157894737, 4.370588235294117, 14.531578947368422, 0.0, 7.38, 29.463157894736838, 1.9157894736842105, 0.0, 14.552631578947368, 3.4473684210526314, 1.0947368421052632, 3.4685714285714284, 14.11578947368421, 21.647368421052633, 0.0, 1.7684210526315791, 13.336842105263159, 21.205263157894734, 6.521052631578947, 0.0, 0.0, 13.5, 1.989473684210526, 1.9368421052631581, 0.0, 7.494736842105263, 13.61578947368421, 13.847368421052632, 0.0, 0.3, 0.0, 14.24736842105263, 0.0, 17.344444444444445, 3.378947368421053, 7.757894736842106, 0.005263157894736842, 5.826315789473685, 0.0, 0.0, 2.2263157894736842, 8.810526315789474, 4.821052631578948, 0.07407407407407407, 0.0, 0.0, 0.17037037037037037, 0.0, 0.0, 20.15263157894737, 8.852631578947367, 19.66842105263158, 28.152631578947368, 0.07894736842105263, 0.0, 0.0, 7.668421052631579, 0.30526315789473685, 8.7, 0.0, 6.742105263157894, 3.0105263157894737, 0.0, 0.0, 0.0, 0.0, 0.0, 14.589473684210526, 28.978947368421053, 0.0, 25.48421052631579, 0.7526315789473684, 14.584210526315792, 28.78421052631579, 0.6052631578947368, 0.0, 0.0, 12.868421052631579, 0.0, 0.0, 9.636842105263158, 1.0263157894736843, 12.178947368421053, 7.0, 0.0, 6.873684210526315, 5.137142857142858, 16.489473684210527, 0.0, 2.1999999999999997, 15.326315789473684, 2.0631578947368423, 3.1578947368421053, 1.1647058823529413, 0.0, 0.0, 10.410526315789474, 4.363157894736841, 0.9473684210526315, 10.84736842105263, 1.4736842105263157, 3.7526315789473683, 12.005263157894737, 15.742105263157896, 0.0, 6.726315789473684, 13.205263157894738, 0.0, 3.5421052631578953, 7.16, 13.721052631578948, 32.636842105263156, 3.547368421052632, 9.6, 0.0, 19.86315789473684, 16.089473684210525, 22.15263157894737, 4.578947368421052, 0.05263157894736842, 0.0, 5.964705882352941, 17.273684210526316, 0.0, 0.05263157894736842, 7.852631578947368, 1.8631578947368421, 0.0, 0.08333333333333333, 0.0, 19.470588235294116, 9.68421052631579, 2.168421052631579, 8.58421052631579, 0.0, 19.905263157894737, 0.0, 0.0, 17.38947368421053, 2.3210526315789473, 5.578947368421052, 0.7875, 10.868421052631579, 0.4473684210526316, 11.442105263157895, 25.24736842105263, 0.0, 18.389473684210525, 0.0, 0.0, 0.0, 0.0, 0.0, 14.073684210526315, 0.0, 0.0, 9.74736842105263, 0.0, 19.436842105263157, 12.73157894736842, 0.0, 0.005263157894736842, 1.4823529411764707, 0.0, 5.894117647058824, 10.605263157894736, 0.0, 0.0, 23.736842105263158, 10.889473684210527, 0.0, 20.04736842105263, 0.0, 16.19473684210526, 19.48421052631579, 0.0, 6.184210526315789, 14.521052631578947, 14.36315789473684, 10.75263157894737, 0.0, 0.0, 4.931578947368421, 0.0, 0.0, 8.31578947368421, 17.07894736842105, 4.321052631578947, 1.6421052631578947, 0.0, 0.0, 21.105263157894736, 0.0, 8.376470588235295, 0.0, 0.005714285714285714, 13.873684210526317, 0.0, 1.4684210526315788, 28.805263157894736, 0.0, 0.0, 0.0, 0.1, 17.189473684210526, 0.2857142857142857, 7.2368421052631575, 14.589473684210526, 0.0, 21.75263157894737, 0.0, 6.705263157894737, 1.1842105263157894, 1.6105263157894738, 0.0, 0.0, 0.0, 0.0, 0.0, 0.39999999999999997, 0.0, 0.0, 0.0, 6.815789473684211, 0.0, 0.9526315789473685, 0.0, 2.1789473684210527, 0.6631578947368421, 9.6, 13.168421052631578, 11.805263157894736, 0.0, 17.78421052631579, 0.0, 0.0, 4.405263157894737, 2.5230769230769234, 0.0, 0.0, 5.942105263157895, 3.4375, 0.0, 0.0, 4.738888888888889, 0.0, 0.0, 24.689473684210526, 15.70810810810811, 0.0, 0.0, 0.0, 0.0, 0.3368421052631579, 0.07777777777777778, 2.972972972972973, 1.2684210526315791, 0.0, 5.626315789473685, 0.0, 0.0, 0.0, 12.98421052631579, 9.342105263157896, 9.868421052631579, 7.347368421052631, 10.978947368421052, 0.0, 2.0157894736842104, 3.668421052631579, 0.0, 14.057894736842107, 0.0, 0.0, 0.7736842105263158, 4.964705882352941, 9.405263157894737, 10.705263157894738, 7.836842105263158, 0.0, 18.05263157894737, 0.868421052631579, 0.0, 0.0, 0.0, 9.178947368421053, 8.594736842105263, 0.0, 1.0947368421052632, 7.621052631578948, 15.152941176470586, 0.1105263157894737, 6.326315789473685, 10.74054054054054, 5.268421052631578, 15.410526315789474, 0.0, 4.1421052631578945, 8.836842105263159, 9.942105263157893, 3.263157894736842, 0.0, 0.0, 0.010526315789473684, 0.2578947368421053, 0.23684210526315788, 0.6473684210526316, 0.0, 6.021052631578947, 2.2947368421052627, 6.131578947368421, 0.0, 0.0, 13.857894736842105, 0.8578947368421052, 16.589473684210525, 8.784210526315789, 0.02631578947368421, 4.0210526315789465, 0.2894736842105263, 0.0, 24.089473684210525, 0.07894736842105263, 22.66842105263158, 22.45945945945946, 0.0, 0.09375, 0.0, 16.626315789473683, 0.0, 8.726315789473684, 20.773684210526316, 23.431578947368422, 10.057894736842105, 0.0, 3.6526315789473687, 0.0, 13.536842105263156, 0.0, 0.0, 0.0, 20.394736842105264, 5.582352941176471, 0.0, 10.989473684210527, 7.363157894736842, 0.0, 0.0, 0.6105263157894737, 5.005263157894737, 0.0, 0.0, 0.0, 22.989473684210527, 0.0, 0.0, 8.31578947368421, 0.0, 0.0, 0.0, 1.205263157894737, 0.0, 0.047058823529411764, 0.0, 2.363157894736842, 2.3684210526315788, 5.0736842105263165, 9.163157894736841, 7.768421052631578, 1.8789473684210527, 0.14210526315789473, 0.0, 16.852631578947367, 4.957894736842105, 0.0, 0.13157894736842105, 0.0, 0.0, 9.451428571428572, 0.0, 13.621052631578948, 8.210526315789474, 5.231578947368421, 0.0, 25.50526315789474, 4.352631578947369, 0.0, 0.02702702702702703, 1.25, 0.0, 0.0, 13.131578947368421, 11.952631578947368, 0.17894736842105263, 0.0, 0.0, 0.0, 26.410526315789475, 0.0, 0.0, 17.347368421052632, 15.305263157894737, 12.947368421052632, 8.442105263157895, 14.18421052631579, 2.1315789473684212, 19.394736842105264, 0.05789473684210527, 0.0, 9.494736842105263, 14.561111111111112, 6.173684210526315, 0.0, 0.0, 0.0, 0.10526315789473684, 20.08421052631579, 0.011111111111111112, 0.0, 0.9621621621621622, 8.621052631578946, 0.0, 0.0, 7.368421052631579, 0.0, 0.0, 5.136842105263158, 0.0, 13.88421052631579, 0.0, 2.7842105263157895, 0.0, 0.0, 0.9842105263157894, 0.0, 18.92105263157895, 0.0, 10.878947368421052, 8.338888888888889, 4.178947368421053, 0.0, 0.0, 10.705263157894738, 16.757894736842104, 12.24736842105263, 0.0, 0.0, 1.5578947368421052, 14.831578947368422, 0.0, 0.0, 17.45263157894737, 0.7090909090909091, 1.4421052631578946, 10.38421052631579, 13.689473684210528, 1.8, 21.657894736842106, 5.126315789473685, 0.0, 6.247368421052632, 0.0, 0.0, 0.0, 3.8000000000000003, 7.342105263157895, 16.8875, 0.8368421052631579, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 2.278947368421053, 0.0, 11.799999999999999, 15.015789473684212, 16.13157894736842, 6.511764705882353, 6.463157894736842, 2.9631578947368418, 0.0, 0.0, 0.0, 0.08888888888888889, 0.0, 0.0, 5.084210526315789, 3.6514285714285712, 9.378947368421052, 0.0, 0.0, 0.0, 2.9894736842105263, 10.052631578947368, 0.0, 1.6578947368421053, 0.0, 0.0, 11.442105263157895, 1.9315789473684213, 14.11578947368421, 0.46315789473684216, 10.11578947368421, 10.994736842105263, 0.0, 19.342105263157894, 0.0, 0.0, 11.952631578947368, 12.326315789473684, 0.0, 16.36315789473684, 23.326315789473682, 0.0, 0.2222222222222222, 2.436842105263158, 17.394736842105264, 23.957894736842103, 3.8526315789473684, 0.010526315789473684, 3.1, 2.7842105263157895, 6.973684210526316, 0.9578947368421055, 3.789473684210526, 20.657894736842106, 12.663157894736841, 5.684210526315789, 0.0, 6.257894736842106, 0.0, 1.8421052631578947, 0.24210526315789477, 9.989473684210525, 0.0, 0.0, 0.0, 12.242105263157894, 18.325, 0.0, 4.489473684210526, 22.46315789473684, 0.0, 0.0, 2.6894736842105265, 14.325, 1.1578947368421053, 0.0, 0.0, 2.8473684210526318, 0.007692307692307693, 0.0, 0.12352941176470589, 16.51578947368421, 8.121052631578948, 0.15, 0.0, 14.43157894736842, 7.889473684210526, 1.2685714285714285, 0.16666666666666666, 4.278947368421052, 7.747368421052631, 0.0, 0.10526315789473684, 27.205263157894734, 19.062857142857144, 16.147368421052633, 18.50526315789474, 11.1125, 0.0, 12.442105263157895, 8.331578947368422, 19.38285714285714, 9.136842105263158, 0.0, 0.08148148148148149, 0.0, 1.0842105263157895, 11.76842105263158, 17.205263157894734, 0.64, 5.4526315789473685, 0.6263157894736843, 4.726315789473684, 0.0, 11.563157894736843, 8.573684210526316, 10.352631578947367, 8.5, 20.373684210526317, 0.0, 10.011764705882353, 4.077777777777778, 0.0, 0.0, 8.989473684210525, 4.5371428571428565, 23.031578947368423, 0.0, 1.6263157894736842, 13.384210526315789, 0.7111111111111111, 9.463157894736842, 2.9941176470588236, 10.405263157894737, 11.1, 9.93157894736842, 7.742105263157894, 0.0, 2.4210526315789473, 0.0, 0.0, 26.963157894736838, 7.936842105263159, 0.0, 0.6368421052631579, 0.06842105263157895, 5.473684210526316, 2.7736842105263158, 0.2777777777777778, 0.0, 0.0, 0.0, 1.6894736842105265, 12.342105263157896, 10.68421052631579, 26.01578947368421, 12.136842105263158, 0.1368421052631579, 9.778947368421052, 22.07894736842105, 2.863157894736842, 9.23157894736842, 30.389473684210525, 8.005263157894737, 0.10526315789473684, 0.0, 7.4263157894736835, 0.0, 5.300000000000001, 13.23157894736842, 9.373684210526315, 12.647368421052631, 11.773684210526316, 8.836842105263159, 10.694736842105263, 3.615789473684211, 1.1263157894736842, 0.02631578947368421, 0.0, 0.0, 0.5526315789473685, 0.0, 0.2157894736842105, 14.75263157894737, 0.0, 1.9157894736842105, 3.8947368421052633, 0.0, 0.0, 11.857894736842105, 5.121052631578947, 5.078947368421052, 0.075, 27.468421052631577, 10.763157894736842, 0.2777777777777778, 0.0, 0.0972972972972973, 0.0, 0.0, 18.089473684210525, 16.321052631578947, 0.0, 0.0, 2.1894736842105265, 5.5, 0.0, 0.0, 0.0, 8.694736842105263, 15.221052631578948, 0.0, 0.16923076923076924, 8.457894736842105, 0.0, 0.0, 3.9942857142857147, 0.0, 0.0, 13.957894736842105, 1.0263157894736843, 4.965714285714286, 2.473684210526316, 2.2473684210526312, 5.063157894736842, 0.0, 2.3421052631578947, 14.189473684210528, 0.0, 2.857894736842105, 14.473684210526315, 0.0, 4.936842105263158, 0.0, 0.5947368421052631, 10.005128205128205, 2.4315789473684206, 0.0, 0.0, 12.56842105263158, 0.0, 4.676470588235294, 5.1947368421052635, 26.13684210526316, 0.20526315789473684, 4.5052631578947375, 0.0, 0.0, 0.0, 10.178947368421053, 0.0, 7.989473684210527, 7.978947368421053, 6.5, 0.0, 3.805263157894737, 0.88, 0.0, 0.0, 0.0, 0.0, 14.861538461538462, 0.0, 0.0, 0.015789473684210527, 20.973684210526315, 0.2263157894736842, 0.0, 27.805263157894736, 3.094736842105263, 1.1263157894736844, 0.48947368421052634, 0.0, 8.942105263157895, 9.944444444444445, 14.125714285714285, 7.684210526315789, 0.0, 8.821052631578947, 0.7135135135135134, 0.0, 0.0, 7.173684210526316, 0.0, 0.0, 5.221052631578948, 19.778947368421054, 11.363157894736842, 14.473684210526315, 0.0, 15.836842105263157, 6.6000000000000005, 0.0, 0.0, 0.6833333333333332, 0.0, 0.0, 0.0, 0.0, 17.626315789473683, 0.0, 0.09473684210526316, 3.1999999999999997, 0.0, 0.0, 6.994736842105263, 7.805263157894737, 0.0, 0.0, 14.573684210526315, 23.978947368421053, 13.61578947368421, 13.247368421052633, 17.410526315789475, 7.6108108108108095, 0.0, 24.110526315789475, 0.0, 0.0, 0.0, 8.4, 0.6842105263157895, 18.347368421052632, 10.957894736842107, 12.631578947368421, 2.4454545454545453, 8.945945945945946, 0.0, 0.0, 0.0, 1.9842105263157896, 3.4666666666666663, 0.43636363636363634, 0.0, 15.6, 9.715789473684211, 0.5052631578947369, 0.0, 10.605263157894736, 0.07142857142857142, 0.0, 0.0, 9.58421052631579, 0.0, 0.0, 25.977777777777778],
@@ -228,9 +17,8 @@ df_season_players = {
 }
 
 df_season_players = pd.DataFrame(df_season_players)
-```
 
-```python
+
 df_haaland = {
     'GW': [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 19, 20, 21, 22, 23, 24, 25, 25, 26, 27, 28, 30, 31, 32, 33, 34, 35, 36, 37, 37, 38],
     'goals_scored':[2, 2, 3, 6, 7, 8, 8, 8, 9, 11, 11, 13, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 16, 16, 17, 17, 18, 18, 18, 18, 19, 20, 20, 21, 25, 25, 27, 27],
@@ -238,14 +26,3 @@ df_haaland = {
 }
 
 df_haaland = pd.DataFrame(df_haaland)
-```
-
-## Support
-If you have any queries regarding hte package and its usage, please contact me.
-
-## Roadmap
-* Histogram, pie boxplot and heatap charts as well as additional charting options to be added to the package
-* Additional custom themes to be added
-
-## Contributing
-For any ideas on how the package could be improved, or if you find any bugs, please contact me.
