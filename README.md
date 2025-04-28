@@ -43,7 +43,7 @@ The plot method on the other hand, contains arguments relating to colour palette
 
 You can also apply any additional transformations to the chart that aren't included in the plot method using standard matplotlib pyplot methods.
 
-**__Please note, you can recreate all of the dataframes used in the example code by running the code in '[Dataframes for chart examples](https://github.com/joey-frees/speedy-charts/tree/release-v1.0.0?tab=readme-ov-file#dataframes-for-chart-examples)' section below.__**
+**__Please note, you can recreate all of the dataframes used in the example code by running the code in '[Dataframes for chart examples](https://github.com/joey-frees/speedy-charts/tree/main?tab=readme-ov-file#dataframes-for-chart-examples)' section below.__**
 
 ### Bar
 #### Basic Bar
