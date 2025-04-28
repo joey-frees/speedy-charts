@@ -113,7 +113,7 @@ class Bar(CreateChart):
                 handles = sorted(handles, key=lambda handle: self.category_list.index(handle.get_label()))
 
             else:
-                ax.bar(self.df[self.x], self.df[self.y], color=colour_palette)
+                ax.bar(self.df[self.x], self.df[self.y], color=colour_palette[0])
 
         # Create bar from lists/arrays
         else:
@@ -346,7 +346,7 @@ class Scatter(CreateChart):
             elif self.category_list is not None and self.custom_ranges is not None and len(colour_palette) >= (len(self.custom_ranges)-1):
             # Create a color map for the categories
                 colour_list = self.convert_hex_list_to_rgba(colour_palette)
-                category_colours = self.create_colour_categories(self.df, self.category_column, colour_list, self.category_list, self.custom_ranges)
+                category_colours = self.create_colour_ranges(self.df, self.category_column, colour_list, self.category_list, self.custom_ranges)
                 ax.scatter(self.df[self.x], self.df[self.y], c=self.df['colour'])
                 handles = [mpatches.Patch(color=category_colours[category], label=category) for category in self.category_list]
                 handles = sorted(handles, key=lambda handle: self.category_list.index(handle.get_label()))
@@ -373,8 +373,6 @@ class Scatter(CreateChart):
         ax.set_xlabel(xlabel=x_label)
         ax.set_ylabel(ylabel=y_label)
         ax.set_title(label=title)
-
-        plt.subplots_adjust(bottom=0.3)
 
         # Add legend to plot
         if self.category_column is None:
