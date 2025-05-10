@@ -27,6 +27,11 @@ class CreateChart:
                 else:
                     if 'upper' not in legend_loc and 'lower' not in legend_loc:
                         plt.legend(bbox_to_anchor=(1.05, 1), loc=legend_loc, borderaxespad=0)
+
+                    elif 'upper' in legend_loc and 'lower' not in legend_loc:
+                        num_items = len(plt.gca().get_legend_handles_labels()[1])
+                        plt.legend(loc=legend_loc, bbox_to_anchor=(0.5, -0.3), ncol=num_items)
+
                     else:
                         num_items = len(plt.gca().get_legend_handles_labels()[1])
                         plt.legend(loc=legend_loc, bbox_to_anchor=(0.5, -0.2), ncol=num_items)
@@ -82,7 +87,7 @@ class Bar(CreateChart):
     def __init__(self, x, y, df = None, category_column = None, category_list = None, custom_ranges = None):
         super().__init__(x, y, df, category_column, category_list, custom_ranges)
 
-    def plot(self, x_label = '', y_label = '', title = '', colour_palette = af_categorical, legend = False, legend_loc = 'upper center', legend_plot_area = 'outside', theme = 'fivethirtyeight'):
+    def plot(self, x_label = '', y_label = '', title = '', colour_palette = af_categorical, legend = False, legend_loc = 'upper center', legend_plot_area = 'outside', theme = 'speedy_charts.mplstyles.standard_theme'):
         plt.style.use(theme)
         fig, ax = plt.subplots(layout = 'constrained')
 
@@ -123,8 +128,6 @@ class Bar(CreateChart):
         ax.set_ylabel(ylabel=y_label)
         ax.set_title(label=title)
 
-        plt.subplots_adjust(bottom=0.3)
-
         # Add legend to plot
         if self.custom_ranges is None and self.category_list is None and self.category_column is None:
             self._legend(legend=legend, legend_loc=legend_loc)
@@ -144,7 +147,7 @@ class Bar(CreateChart):
                     ax.legend(handles=handles, bbox_to_anchor=(1.05, 1), loc=legend_loc, borderaxespad=0)
                 else:
                     num_items = len(handles)
-                    ax.legend(handles=handles, loc=legend_loc, bbox_to_anchor=(0.5, -0.2), ncol=num_items)
+                    ax.legend(handles=handles, loc=legend_loc, bbox_to_anchor=(0.5, -0.3), ncol=num_items)
 
         print('Colour Palette - ', colour_palette)
 
@@ -155,7 +158,7 @@ class StackedBar(CreateChart):
     def __init__(self, x, y, df=None):
         super().__init__(x, y, df)
 
-    def plot(self, x_label = '', y_label = '', title = '', colour_palette = af_categorical, legend = True, legend_loc = 'upper center', legend_plot_area = 'outside', theme = 'fivethirtyeight'):
+    def plot(self, x_label = '', y_label = '', title = '', colour_palette = af_categorical, legend = True, legend_loc = 'upper center', legend_plot_area = 'outside', theme = 'speedy_charts.mplstyles.standard_theme'):
         plt.style.use(theme)
         fig, ax = plt.subplots(layout='constrained')
 
@@ -198,7 +201,7 @@ class HorizontalStackedBar(CreateChart):
     def __init__(self, x, y, df=None):
         super().__init__(x, y, df)
 
-    def plot(self, x_label = '', y_label = '', title = '', colour_palette = af_categorical, legend = True, legend_loc = 'lower center', legend_plot_area = 'outside', theme = 'fivethirtyeight'):
+    def plot(self, x_label = '', y_label = '', title = '', colour_palette = af_categorical, legend = True, legend_loc = 'lower center', legend_plot_area = 'outside', theme = 'speedy_charts.mplstyles.standard_theme'):
         plt.style.use(theme)
         fig, ax = plt.subplots(layout='constrained')
 
@@ -239,7 +242,7 @@ class GroupedBar(CreateChart):
     def __init__(self, x, y, df=None):
         super().__init__(x, y, df)
 
-    def plot(self, x_label = '', y_label = '', title = '', colour_palette = af_categorical, legend = True, legend_loc = 'upper center', legend_plot_area = 'outside', theme = 'fivethirtyeight'):
+    def plot(self, x_label = '', y_label = '', title = '', colour_palette = af_categorical, legend = True, legend_loc = 'upper center', legend_plot_area = 'outside', theme = 'speedy_charts.mplstyles.standard_theme'):
         plt.style.use(theme)
         fig, ax = plt.subplots(layout='constrained')
 
@@ -286,7 +289,7 @@ class Line(CreateChart):
     def __init__(self, x, y, df=None):
         super().__init__(x, y, df)
 
-    def plot(self, x_label = '', y_label = '', title = '', colour_palette= af_categorical, legend = False, legend_loc = 'upper center', legend_plot_area = 'outside', theme = 'fivethirtyeight'):
+    def plot(self, x_label = '', y_label = '', title = '', colour_palette= af_categorical, legend = False, legend_loc = 'lower center', legend_plot_area = 'outside', theme = 'speedy_charts.mplstyles.standard_theme'):
         plt.style.use(theme)
         fig, ax = plt.subplots(layout='constrained')
 
@@ -314,7 +317,7 @@ class Scatter(CreateChart):
     def __init__(self, x, y, df=None, category_column=None, category_list=None, custom_ranges=None):
         super().__init__(x, y, df, category_column, category_list, custom_ranges)
 
-    def plot(self, x_label = '', y_label = '', title = '', colour_palette = af_categorical, legend = True, legend_loc = 'upper center', legend_plot_area = 'outside', theme = 'fivethirtyeight' ):
+    def plot(self, x_label = '', y_label = '', title = '', colour_palette = af_categorical, legend = True, legend_loc = 'lower center', legend_plot_area = 'outside', theme = 'speedy_charts.mplstyles.standard_theme' ):
         plt.style.use(theme)
         fig, ax = plt.subplots(layout='constrained')
 
