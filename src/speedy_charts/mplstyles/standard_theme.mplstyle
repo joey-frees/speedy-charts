@@ -1,0 +1,26 @@
+figure.figsize: 10,6
+figure.facecolor: white
+
+axes.facecolor: white
+axes.spines.left: True
+axes.spines.bottom: True
+axes.spines.top: False
+axes.spines.right: False
+
+xtick.direction: in
+ytick.direction: in
+xtick.major.width: 2
+ytick.major.width: 2
+xtick.labelsize: medium
+ytick.labelsize: medium
+
+font.family: Arial
+font.size: 12.0
+
+axes.titlesize: 18
+axes.titleweight: bold
+axes.labelsize: large
+axes.labelweight: bold
+axes.edgecolor: grey
+
+legend.frameon: False
